@@ -204,11 +204,11 @@ class swmt():
             self.p = xr.apply_ufunc(gsw.p_from_z, -self.ds['lev_outer'], self.ds['y'], 0, 0, dask='parallelized')
         # Calculate absolute salinity (g/kg)
         if self.teos10 and 'sa' not in vars(self):
-            self.sa = xr.apply_ufunc(gsw.SA_from_SP, self.ds[self.tend('salt')].where(self.ds['lev_outer']==0).where(self.ds['wet']==1),
+            self.sa = xr.apply_ufunc(gsw.SA_from_SP, self.ds[self.tend('salt')].where(self.ds['lev_outer']==0),
                             self.p, self.ds['x'], self.ds['y'], dask='parallelized')
         # Calculate conservative temperature (degC)
         if self.teos10 and 'ct' not in vars(self):
-            self.ct = xr.apply_ufunc(gsw.CT_from_t, self.sa, self.ds[self.tend('heat')].where(self.ds['lev_outer']==0).where(self.ds['wet']==1),
+            self.ct = xr.apply_ufunc(gsw.CT_from_t, self.sa, self.ds[self.tend('heat')].where(self.ds['lev_outer']==0),
                             self.p, dask='parallelized')
         if not self.teos10 and ('sa' not in vars(self) or 'ct' not in vars(self)):
             self.sa = self.ds.so
